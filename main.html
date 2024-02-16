@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie Manager</title>
+</head>
+<body>
+  <h1>Cookie Manager</h1>
+  <form id="cookieForm">
+    <label for="language">Idioma:</label>
+    <input type="text" id="language" name="language"><br><br>
+
+    <label for="theme">Tema:</label>
+    <input type="text" id="theme" name="theme"><br><br>
+
+    <label for="user">Usuario:</label>
+    <input type="text" id="user" name="user"><br><br>
+
+    <label for="preference">Preferencia:</label>
+    <input type="text" id="preference" name="preference"><br><br>
+
+    <button type="submit">Guardar</button>
+  </form>
+
+  <script>
+    const cookieForm = document.getElementById('cookieForm');
+
+    function setCookie(name, value, expiration) {
+      const expires = expiration ? `expires=${expiration.toUTCString()}` : '';
+      document.cookie = `${name}=${value};${expires};path=/`;
+    }
+
+    function getCookie(name) {
+      const cookies = document.cookie.split(';').map(cookie => cookie.trim().split('='));
+      const cookie = cookies.find(cookie => cookie[0] === name);
+      return cookie ? cookie[1] : null;
+    }
+
+    function showCookies() {
+      console.log('Cookies vigentes:');
+      console.log(`Idioma: ${getCookie('language')}`);
+      console.log(`Tema: ${getCookie('theme')}`);
+      console.log(`Usuario: ${getCookie('user')}`);
+      console.log(`Preferencia: ${getCookie('preference')}`);
+      console.log(`Última visita: ${getCookie('lastVisit')}`);
+    }
+
+    cookieForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(cookieForm);
+      const expirationDates = [
+        new Date(Date.now() + 10 * 1000),
+        new Date(Date.now() + 15 * 1000), 
+        new Date(Date.now() + 20 * 1000)  
+      ];
+      let index = 0;
+      for (const [name, value] of formData.entries()) {
+        setCookie(name, value, expirationDates[index]);
+        index++;
+      }
+      setCookie('lastVisit', new Date());
+    });
+
+    setInterval(showCookies, 2000);
+  </script>
+</body>
+</html>
